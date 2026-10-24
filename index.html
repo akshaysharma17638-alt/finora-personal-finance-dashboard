@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Finora – Personal Finance Dashboard</title>
+  <meta name="description" content="Track income, expenses and monthly budget with Finora." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Icon sprite: every icon in the app is reused from here with <use href="#i-name"> -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 11l9-8 9 8M5 10v10h14V10"/></symbol>
+      <symbol id="i-list" viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></symbol>
+      <symbol id="i-chart" viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></symbol>
+      <symbol id="i-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/></symbol>
+      <symbol id="i-wallet" viewBox="0 0 24 24"><path d="M3 7a2 2 0 012-2h13v4M3 7v11a2 2 0 002 2h15V9H5a2 2 0 01-2-2zM16 14.5h.01"/></symbol>
+      <symbol id="i-up" viewBox="0 0 24 24"><path d="M7 17L17 7M8 7h9v9"/></symbol>
+      <symbol id="i-down" viewBox="0 0 24 24"><path d="M7 7l10 10M17 8v9H8"/></symbol>
+      <symbol id="i-receipt" viewBox="0 0 24 24"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2zM9 8h6M9 12h6"/></symbol>
+      <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 019.5 4 8 8 0 1020 14.5z"/></symbol>
+      <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol>
+      <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+      <symbol id="i-edit" viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16zM13.5 6.5l4 4"/></symbol>
+      <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></symbol>
+      <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></symbol>
+      <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></symbol>
+    </defs>
+  </svg>
+
+  <div class="app">
+
+    <!-- ========== SIDEBAR (becomes a bottom bar on mobile) ========== -->
+    <aside class="sidebar">
+      <a class="brand" href="#dashboard" aria-label="Finora home">
+        <span class="brand-mark">F</span><span class="brand-name">Finora</span>
+      </a>
+
+      <nav class="nav" aria-label="Main navigation">
+        <a class="nav-link is-active" href="#dashboard"><svg class="icon"><use href="#i-home"/></svg><span>Dashboard</span></a>
+        <a class="nav-link" href="#transactions"><svg class="icon"><use href="#i-list"/></svg><span>Transactions</span></a>
+        <a class="nav-link" href="#analytics"><svg class="icon"><use href="#i-chart"/></svg><span>Analytics</span></a>
+        <a class="nav-link" href="#budget"><svg class="icon"><use href="#i-target"/></svg><span>Budget</span></a>
+      </nav>
+
+      <button type="button" id="theme-toggle" class="nav-link theme-toggle" aria-label="Switch to dark mode">
+        <svg class="icon"><use id="theme-icon" href="#i-moon"/></svg><span id="theme-label">Dark mode</span>
+      </button>
+
+      <div class="profile">
+        <img class="avatar" src="profile.jpg" alt="Akshay Sharma" />
+        <div><strong>Your Account</strong><small>AKSHAY SHARMA</small></div>
+      </div>
+    </aside>
+
+    <!-- ========== MAIN CONTENT ========== -->
+    <main class="main">
+
+      <!-- Dashboard header + summary cards -->
+      <section id="dashboard" class="section" aria-labelledby="page-title">
+        <header class="page-header">
+          <div>
+            <h1 id="page-title">Dashboard</h1>
+            <p class="muted"><span id="welcome-text">Welcome back</span> · <time id="current-date"></time></p>
+          </div>
+          <button type="button" id="open-add-modal" class="btn btn-primary">
+            <svg class="icon"><use href="#i-plus"/></svg>Add transaction
+          </button>
+        </header>
+
+        <div class="cards">
+          <article class="card stat">
+            <span class="stat-icon stat-balance"><svg class="icon"><use href="#i-wallet"/></svg></span>
+            <p class="stat-label">Total balance</p>
+            <p class="stat-value" id="card-balance">₹0</p>
+            <p class="stat-note">Income minus expenses</p>
+          </article>
+          <article class="card stat">
+            <span class="stat-icon stat-income"><svg class="icon"><use href="#i-up"/></svg></span>
+            <p class="stat-label">Total income</p>
+            <p class="stat-value" id="card-income">₹0</p>
+            <p class="stat-note">All income transactions</p>
+          </article>
+          <article class="card stat">
+            <span class="stat-icon stat-expense"><svg class="icon"><use href="#i-down"/></svg></span>
+            <p class="stat-label">Total expenses</p>
+            <p class="stat-value" id="card-expense">₹0</p>
+            <p class="stat-note">All expense transactions</p>
+          </article>
+          <article class="card stat">
+            <span class="stat-icon stat-count"><svg class="icon"><use href="#i-receipt"/></svg></span>
+            <p class="stat-label">Transactions</p>
+            <p class="stat-value" id="card-count">0</p>
+            <p class="stat-note">Saved in this browser</p>
+          </article>
+        </div>
+      </section>
+
+      <!-- Transactions -->
+      <section id="transactions" class="section" aria-labelledby="transactions-title">
+        <div class="card">
+          <div class="card-head">
+            <h2 id="transactions-title">Transactions</h2>
+            <div class="toolbar">
+              <label class="search">
+                <svg class="icon"><use href="#i-search"/></svg>
+                <span class="visually-hidden">Search transactions</span>
+                <input type="search" id="search-input" placeholder="Search name or category" autocomplete="off" />
+              </label>
+              <div class="segmented" role="group" aria-label="Filter by type">
+                <button type="button" class="filter-btn is-active" data-filter="all" aria-pressed="true">All</button>
+                <button type="button" class="filter-btn" data-filter="income" aria-pressed="false">Income</button>
+                <button type="button" class="filter-btn" data-filter="expense" aria-pressed="false">Expense</button>
+              </div>
+              <label class="select-wrap">
+                <span class="visually-hidden">Sort by date</span>
+                <select id="sort-order">
+                  <option value="newest">Newest first</option>
+                  <option value="oldest">Oldest first</option>
+                </select>
+              </label>
+            </div>
+          </div>
+
+          <div class="table-wrap" id="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th scope="col">Name</th>
+                  <th scope="col">Category</th>
+                  <th scope="col">Date</th>
+                  <th scope="col" class="num">Amount</th>
+                  <th scope="col">Type</th>
+                  <th scope="col" class="num">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="transactions-body"></tbody>
+            </table>
+          </div>
+
+          <div class="empty" id="empty-state" hidden>
+            <svg class="icon empty-icon"><use href="#i-receipt"/></svg>
+            <h3>No transactions yet</h3>
+            <p class="muted">Add your first income or expense to see your finances come to life.</p>
+            <button type="button" class="btn btn-primary" id="empty-add-btn">Add transaction</button>
+          </div>
+          <div class="empty" id="no-results" hidden>
+            <svg class="icon empty-icon"><use href="#i-search"/></svg>
+            <h3>No matching transactions</h3>
+            <p class="muted">Try a different search term or change the filter.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Analytics -->
+      <section id="analytics" class="section" aria-labelledby="analytics-title">
+        <div class="card">
+          <div class="card-head"><h2 id="analytics-title">Spending analytics</h2></div>
+          <div class="analytics" id="analytics-content">
+            <div class="chart-box"><canvas id="category-chart" aria-label="Spending by category chart" role="img"></canvas></div>
+            <ul class="category-list" id="category-list"></ul>
+          </div>
+          <div class="empty" id="analytics-empty" hidden>
+            <svg class="icon empty-icon"><use href="#i-chart"/></svg>
+            <h3>No expense data yet</h3>
+            <p class="muted">Add an expense and your spending by category will appear here.</p>
+          </div>
+          <p class="notice" id="chart-error" hidden>The chart library could not load (check your internet connection). Your category breakdown is still shown in the list.</p>
+        </div>
+      </section>
+
+      <!-- Budget -->
+      <section id="budget" class="section" aria-labelledby="budget-title">
+        <div class="card" id="budget-card">
+          <div class="card-head">
+            <h2 id="budget-title">Monthly budget</h2>
+            <label class="month-picker">
+              <span class="visually-hidden">Select month</span>
+              <input type="month" id="budget-month" />
+            </label>
+          </div>
+
+          <div class="budget-grid">
+            <div><p class="stat-label">Budget used</p><p class="budget-value" id="budget-spent">₹0</p></div>
+            <div><p class="stat-label">Remaining</p><p class="budget-value" id="budget-remaining">₹0</p></div>
+            <div><p class="stat-label">Percentage used</p><p class="budget-value" id="budget-percent">0%</p></div>
+          </div>
+
+          <div class="progress" role="progressbar" aria-label="Budget used" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="budget-progress">
+            <div class="progress-bar" id="budget-bar"></div>
+          </div>
+          <p class="budget-status" id="budget-status" aria-live="polite"></p>
+
+          <form id="budget-form" class="budget-form" novalidate>
+            <label for="budget-input">Monthly budget (₹)</label>
+            <div class="budget-form-row">
+              <input type="number" id="budget-input" min="1" step="1" inputmode="numeric" />
+              <button type="submit" class="btn btn-primary">Save budget</button>
+            </div>
+            <p class="field-error" id="budget-error" role="alert"></p>
+          </form>
+        </div>
+      </section>
+
+      <footer class="footer muted">Finora · Data is stored in this browser only (LocalStorage), not in the cloud.</footer>
+    </main>
+  </div>
+
+  <!-- ========== ADD / EDIT TRANSACTION MODAL (native <dialog>: Esc closes it, focus stays inside) ========== -->
+  <dialog id="transaction-modal" class="modal" aria-labelledby="modal-title">
+    <form id="transaction-form" novalidate>
+      <div class="modal-head">
+        <h2 id="modal-title">Add transaction</h2>
+        <button type="button" class="icon-btn" id="close-modal-btn" aria-label="Close"><svg class="icon"><use href="#i-close"/></svg></button>
+      </div>
+
+      <div class="field">
+        <label for="field-name">Transaction name</label>
+        <input type="text" id="field-name" maxlength="60" autocomplete="off" placeholder="e.g. Monthly salary" />
+        <p class="field-error" id="error-name"></p>
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="field-amount">Amount (₹)</label>
+          <input type="number" id="field-amount" min="0" step="0.01" inputmode="decimal" placeholder="0.00" />
+          <p class="field-error" id="error-amount"></p>
+        </div>
+        <div class="field">
+          <label for="field-type">Type</label>
+          <select id="field-type">
+            <option value="expense">Expense</option>
+            <option value="income">Income</option>
+          </select>
+          <p class="field-error" id="error-type"></p>
+        </div>
+      </div>
+
+      <div class="field-row">
+        <div class="field">
+          <label for="field-category">Category</label>
+          <select id="field-category">
+            <option value="">Select a category</option>
+            <option>Salary</option><option>Education</option><option>Food</option>
+            <option>Shopping</option><option>Transport</option><option>Bills</option>
+            <option>Entertainment</option><option>Healthcare</option><option>Freelance</option>
+            <option>Investment</option><option>Other</option>
+          </select>
+          <p class="field-error" id="error-category"></p>
+        </div>
+        <div class="field">
+          <label for="field-date">Date</label>
+          <input type="date" id="field-date" />
+          <p class="field-error" id="error-date"></p>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="field-notes">Notes <span class="muted">(optional)</span></label>
+        <textarea id="field-notes" rows="2" maxlength="200" placeholder="Anything worth remembering"></textarea>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="btn btn-ghost" id="cancel-btn">Cancel</button>
+        <button type="submit" class="btn btn-primary" id="save-btn">Save transaction</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- ========== DELETE CONFIRMATION ========== -->
+  <dialog id="confirm-dialog" class="modal modal-small" aria-labelledby="confirm-title">
+    <h2 id="confirm-title">Delete transaction?</h2>
+    <p class="muted" id="confirm-text">This cannot be undone.</p>
+    <div class="modal-actions">
+      <button type="button" class="btn btn-ghost" id="confirm-cancel">Keep it</button>
+      <button type="button" class="btn btn-danger" id="confirm-delete">Delete</button>
+    </div>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <!-- Chart.js via CDN. If it fails to load, script.js shows a friendly message instead. -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
